@@ -1,0 +1,122 @@
+/*
+Advantages of using an Avro schema for a message:
+ 1) Data validation => verifies that all messages sent as "TransactionEvent" comply with the defined structure, so invalid/corrupt data cannot enter into the topic.
+ 2) Fast and efficient serialization/deserialization, into bytes.
+*/
+{
+  "type": "record",   // Indicates that this schema defines a complex data structure containing multiple fields.
+  "name": "TransactionEvent",   // The name of the message type.
+  "namespace": "mvp.kafka.avro.model",  // Where to generate the classes
+  "doc": "Dummy Avro schema for a message event  called 'TransactionEvent', that will generate the 'model' classes in the specified directory", // Message description
+  "fields": [   // This section defines the individual data elements within the "TransactionEvent" message.
+    {
+      "name": "header", // This field can be either NULL or another sub-message (with its own fields).
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "TransactionEventHeader",
+          "doc": "Default information",
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "type": "string",
+                "avro.java.string": "String"
+              },
+              "doc": "GUID (UUID) of the event making it globally identifiable"
+            },
+            {
+              "name": "sourceSystem",
+              "type": {
+                "type": "string",
+                "avro.java.string": "String"
+              },
+              "doc": "Source system which created the event"
+            },
+            {
+              "name": "createdAt",
+              "type": "long",
+              "doc": "Event timestamp creation in epoch format"
+            }
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "body",
+      "type": {
+        "type": "record",
+        "name": "TransactionEventBody",
+        "doc": "Body information of the event",
+        "fields": [
+          {
+            "name": "transactionId",
+            "type": {
+              "type": "string",
+              "avro.java.string": "String"
+            },
+            "doc": "UUID of the transaction"
+          },
+          {
+            "name": "userId",
+            "type": {
+              "type": "string",
+              "avro.java.string": "String"
+            },
+            "doc": "UUID of the user that initiated the transaction"
+          },
+          {
+            "name": "transactionType",
+            "type": {
+              "type": "enum",
+              "name": "TransactionType",
+              "symbols": [
+                "INSTANT_PAYMENT",
+                "SEPA",
+                "CREDIT_CARD"
+              ]
+            },
+            "doc": "Transaction type of the payment"
+          },
+          {
+            "name": "date",
+            "type": "long",
+            "doc": "The timestamp when the transaction event was generated"
+          },
+          {
+            "name": "amount",
+            "type": "long",
+            "doc": "The amount of money sent in this transaction"
+          },
+          {
+            "name": "currency",
+            "type": [
+              "null",
+              {
+                "type": "string",
+                "avro.java.string": "String"
+              }
+            ],
+            "doc": "Transaction currency",
+            "default": null
+          },
+          {
+            "name": "description",
+            "type": [
+              "null",
+              {
+                "type": "string",
+                "avro.java.string": "String"
+              }
+            ],
+            "doc": "Description of the transaction purpose",
+            "default": null
+          }
+        ]
+      },
+      "doc": "body of transaction event"
+    }
+  ]
+}
