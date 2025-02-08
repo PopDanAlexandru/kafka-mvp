@@ -1,5 +1,5 @@
 # Kafka MVP
-This is a Proof-of-Concept for producing and consuming Kafka messages in a spring-boot app. It exposes an API through which the user produces/publishes a message (_transaction = text + amount of money + currency_) into a Kafka topic, and then the message is automatically fetched by a consumer (_being configured to connect to same broker_).
+This is a Proof-of-Concept for producing and consuming Kafka messages in a spring-boot app. It exposes an API through which the user produces/publishes a message (_transaction = text + amount of money + currency_) into a Kafka topic, and then the message is automatically fetched by a consumer (_being configured to connect to same broker_). The consumer polls/retrieves batches of at most 50 new messages, with a frequency of 10 seconds.
 
 ---
 
@@ -49,7 +49,9 @@ To fix this limitation, can be used a Schema Registry (_separate server_), in or
 ![Kafka schema registry.png](Kafka%20schema%20registry.png)
 
 ### Kafka vs RabbitMQ:
-* Kafka works as a Queue but in addition it organizes the messages on topics, and assigns an offset (ID) to each message, such that a consumer can request again older messages to support retry mechanisms. So Kafka is durable and supports more complex message handling.
+* Kafka works as a Queue but in addition it organizes the messages on topics, and assigns an ID to each message, such that a consumer can request again older messages to support the retry/replay mechanisms.
+* Kafka is pull-based, to allow scalability (_adding multiple consumers to a topic, without affecting the performance_). Each consumer can use different polling/fetching frequency (_a consumer polls in real time, another consumes messages in batches_). But RabbitMQ is push-based, because the exchange sends the message to a subscribed consumer.
+* Kafka does not have a default management dashboard, as [RabbitMQ does](https://www.rabbitmq.com/docs/management#management-ui-screenshot-with-basic-authentication), but there are external tools like [Confluent](https://www.confluent.io/product/confluent-platform/gui-driven-management-and-monitoring/) and [AKHQ](https://akhq.io/) for monitoring the Kafka cluster.
 
 ### Use-cases and advantages:
 * processing and storing millions of messages per second, and ability to replay historical data, to generate statistics or to re-run algorithms => **Big-Data applications** or **Logging**
