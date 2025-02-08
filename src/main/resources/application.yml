@@ -3,9 +3,10 @@ spring:
         bootstrap-servers: localhost:9092
         consumer:
             group-id: demo-group
-            auto-offset-reset: earliest
-            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            auto-offset-reset: earliest     # when consumer starts, it should consume all available messages (there is also value "latest", to impose consuming only from the last available message, and ignore the earlier messages)
+            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer     # using standard String serializer+deserializer for parsing the JSON-message
             value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            max-poll-records: 50   # consume max 50 messages at once (for batch processing, instead of retrieving one message at once)
         producer:
             key-serializer: org.apache.kafka.common.serialization.StringSerializer
             value-serializer: org.apache.kafka.common.serialization.StringSerializer
