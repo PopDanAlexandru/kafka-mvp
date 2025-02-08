@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  zookeeper:  # orchestrates/manages Kafka Brokers and performs load balancing
+  zookeeper:  # orchestrates/manages Kafka Brokers and performs their load balancing
     image: wurstmeister/zookeeper:latest
     ports:
       - "2181:2181"
@@ -19,5 +19,5 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "demo-topic:1:1"
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # to persist data within Docker volumes
